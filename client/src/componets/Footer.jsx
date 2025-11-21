@@ -3,6 +3,7 @@ import Container from './Container'
 import Title from './Title'
 import SocialLink from './SocialLink'
 import { Link } from 'react-router-dom'
+import { paymentCard } from "../assets/images/index"
 
 const shopArray = [
     { title: "Accessories", link: "/shop" },
@@ -69,6 +70,25 @@ const Footer = () => {
                         }
                     </div>
                 </div>
+
+                <div className='col-span-2 flex-col items-center w-full'>
+                    <Title className="text-xl mb-6 text-center">
+                        Subcribe to our newsletter
+                    </Title>
+                    <div className='my-3'>
+                        <p className='text-lightText text-center '>Lorem ipsum dolor sit ammet.</p>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <input type="text"
+                            className='w-full h-12 border-b text-white border-gray-400 bg-transparent px-4  text-lg placeholder:text-base outline-none'
+                            placeholder='insert your email...' />
+                        <button className='px-6 py-2 bg-primary/70 border border-transparent hove:border-gray-500 duration-300 rounded-md'>
+                            Submit
+                        </button>
+                    </div>
+                    <img src={paymentCard} alt="" />
+                </div>
+
             </Container>
         </div>
     )
