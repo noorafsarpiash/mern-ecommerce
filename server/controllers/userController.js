@@ -6,6 +6,10 @@ const userRegister = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    if (!name || !email || !password) {
+      return res.json({ success: false, message: "All fields are required" });
+    }
+
     if (!validator.isEmail(email)) {
       return res.json({
         success: false,
@@ -35,7 +39,7 @@ const userRegister = async (req, res) => {
 
     res.send({
       success: true,
-      message: "API is connected succesfully ",
+      message: "User registered succesfully ",
     });
   } catch (error) {
     console.log("User Register Error");
