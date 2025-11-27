@@ -17,7 +17,7 @@ const createToken = (user) => {
 };
 
 // =====================
-//      USER LOGIN (সংশোধিত)
+//       USER LOGIN
 // =====================
 const userLogin = async (req, res) => {
   try {
@@ -44,41 +44,40 @@ const userLogin = async (req, res) => {
         success: false,
         message: "User not found",
       });
-    } // Compare password
+    }
 
+    // Compare password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (isPasswordValid) {
-      const token = createToken(user);
-      // ***** এখানে সংশোধন করা হয়েছে *****
-      return res.json({
-        success: true, // <-- 'true' করা হয়েছে
-        token, // <-- টোকেন অন্তর্ভুক্ত করা হয়েছে
-        message: "User logged in successfully",
-      });
-    } else {
-      // ***** এখানেও নিশ্চিতভাবে রিটার্ন করা হয়েছে *****
+    if (!isPasswordValid) {
       return res.json({
         success: false,
         message: "Incorrect password",
       });
     }
 
-    // ফাংশনটি যেহেতু আগের if/else ব্লকের মধ্যেই রিটার্ন করছে,
-    // তাই নিচের এই অপ্রয়োজনীয় লাইনগুলো মুছে ফেলা হয়েছে।
+    // Create token
+    const token = createToken(user);
+
+    return res.json({
+      success: true,
+      token,
+      message: "User logged in successfully",
+    });
   } catch (error) {
-    console.log("User Login Error", error);
-    res.json({ success: false, message: error?.message });
+    console.log("User Login Error:", error);
+    return res.json({ success: false, message: error.message });
   }
 };
 
 // =====================
-//      USER REGISTER (অপরিবর্তিত)
+//      USER REGISTER
 // =====================
 const userRegister = async (req, res) => {
   try {
-    const { name, email, password } = req.body; // Validation
+    const { name, email, password } = req.body;
 
+    // Validation
     if (!name || !email || !password) {
       return res.json({
         success: false,
@@ -91,26 +90,30 @@ const userRegister = async (req, res) => {
         success: false,
         message: "Please enter a valid email address",
       });
-    } // Existing user check
+    }
 
+    // Existing user check
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.json({
-        success: false, // fixed (was true)
+        success: false,
         message: "User already exists",
       });
-    } // Password length check
+    }
 
+    // Password length check
     if (password.length < 8) {
       return res.json({
         success: false,
         message: "Password should be at least 8 characters long",
       });
-    } // Hash password
+    }
 
+    // Hash password
     const salt = await bcrypt.genSalt(10);
-    const encryptedPassword = await bcrypt.hash(password, salt); // Create new user
+    const encryptedPassword = await bcrypt.hash(password, salt);
 
+    // Create new user
     const newUser = new userModel({
       name,
       email,
@@ -119,7 +122,7 @@ const userRegister = async (req, res) => {
 
     await newUser.save();
 
-    res.json({
+    return res.json({
       success: true,
       message: "User registered successfully",
     });
@@ -133,9 +136,114 @@ const userRegister = async (req, res) => {
 };
 
 // Placeholder controllers
-const adminLogin = async (req, res) => {};
-const removeUser = async (req, res) => {};
-const updateUser = async (req, res) => {};
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      res.json({
+        success: true,
+        token,
+        message: "Admin logged in successfully",
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Invalid creadientials",
+      });
+    }
+  } catch (error) {
+    console.log("Admin Login Error", error);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+const removeUser = async (req, res) => {
+  try {
+    await userModel.findByIdAndDelete(req.body._id);
+    res.json({
+      success: true,
+      message: "User removed successfully",
+    });
+  } catch (error) {
+    console.log("Removed user Error");
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+const updateUser = async (req, res) => {
+  try {
+    const { _id, name, email, password } = req.body;
+
+    // Check ID
+    if (!_id) {
+      return res.json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // Find user
+    const user = await userModel.findById(_id);
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update name
+    if (name) {
+      user.name = name;
+    }
+
+    // Update email
+    if (email) {
+      if (!validator.isEmail(email)) {
+        return res.json({
+          success: false,
+          message: "Please enter a valid email address",
+        });
+      }
+      user.email = email;
+    }
+
+    // Update password
+    if (password) {
+      if (password.length < 8) {
+        return res.json({
+          success: false,
+          message: "Password should be at least 8 characters long",
+        });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    // Save updated user
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "User updated successfully",
+    });
+  } catch (error) {
+    console.log("Update User Error:", error.message);
+    res.json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
 const getUsers = async (req, res) => {
   res.send("Get Users");
 };
