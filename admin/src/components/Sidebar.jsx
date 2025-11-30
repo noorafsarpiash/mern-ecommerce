@@ -11,7 +11,7 @@ import { NavLink } from 'react-router-dom'
 const Sidebar = () => {
   return (
     <div className='w-full h-full'>
-      <div className='flex flex-col gap-4 mt-2 pl-6'>
+      <div className='flex flex-col gap-4 mt-2 md:pl-6'>
         <NavLink className="flex items-center justify-center md:justify-normal gap-3 border border-gray-300 border-r-0 py-2 px-3 bg-gray-100 hover:bg-black/80 hover:text-white duration-300" to={"/add"}>
           <span className='inline-flex border border-gray-300 items-start justify-center rounded-full text-lg p-1'>
             <IoMdAdd />
