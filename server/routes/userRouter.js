@@ -7,14 +7,15 @@ import {
   userLogin,
   userRegister,
 } from "../controllers/userController.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const userRouter = express.Router();
 
 userRouter.post("/register", userRegister);
 userRouter.post("/login", userLogin);
-userRouter.post("/admin/login", adminLogin);
+userRouter.post("/admin", adminLogin);
 userRouter.post("/remove", removeUser);
 userRouter.put("/update/:id", updateUser);
-userRouter.get("/users", getUsers);
+userRouter.get("/users", adminAuth, getUsers);
 
 export default userRouter;

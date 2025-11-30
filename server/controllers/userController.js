@@ -139,30 +139,37 @@ const userRegister = async (req, res) => {
 const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (
       email === process.env.ADMIN_EMAIL &&
       password === process.env.ADMIN_PASSWORD
     ) {
-      const token = jwt.sign(email + password, process.env.JWT_SECRET);
-      res.json({
+      const token = jwt.sign(
+        { email: process.env.ADMIN_EMAIL }, // payload object
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      return res.json({
         success: true,
         token,
         message: "Admin logged in successfully",
       });
-    } else {
-      res.json({
-        success: false,
-        message: "Invalid creadientials",
-      });
     }
+
+    return res.json({
+      success: false,
+      message: "Invalid credentials",
+    });
   } catch (error) {
-    console.log("Admin Login Error", error);
-    res.json({
+    console.log("Admin Login Error:", error);
+    return res.json({
       success: false,
       message: error.message,
     });
   }
 };
+
 const removeUser = async (req, res) => {
   try {
     await userModel.findByIdAndDelete(req.body._id);
@@ -245,7 +252,22 @@ const updateUser = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
-  res.send("Get Users");
+  try {
+    const total = await userModel.countDocuments();
+    const users = await userModel.find({});
+
+    return res.json({
+      success: true,
+      total,
+      users,
+    });
+  } catch (error) {
+    console.log("All users get error", error);
+    return res.json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 export {
