@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   avatar: { type: String },
   userCart: { type: Object },
+  isAdmin: { type: Boolean },
 });
 
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);

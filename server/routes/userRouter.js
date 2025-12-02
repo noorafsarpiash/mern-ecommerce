@@ -14,7 +14,8 @@ const userRouter = express.Router();
 userRouter.post("/register", userRegister);
 userRouter.post("/login", userLogin);
 userRouter.post("/admin", adminLogin);
-userRouter.post("/remove", removeUser);
+
+userRouter.delete("/remove/:id", adminAuth, removeUser); // ✅ Only this route for deleting
 userRouter.put("/update/:id", updateUser);
 userRouter.get("/users", adminAuth, getUsers);
 

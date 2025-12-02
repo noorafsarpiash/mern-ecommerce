@@ -10,6 +10,7 @@ const createToken = (user) => {
       _id: user._id,
       email: user.email,
       name: user.name,
+      isAdmin: user.isAdmin,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1d" }
@@ -75,7 +76,7 @@ const userLogin = async (req, res) => {
 // =====================
 const userRegister = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, isAdmin } = req.body;
 
     // Validation
     if (!name || !email || !password) {
@@ -118,6 +119,7 @@ const userRegister = async (req, res) => {
       name,
       email,
       password: encryptedPassword,
+      isAdmin,
     });
 
     await newUser.save();
@@ -140,51 +142,77 @@ const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      const token = jwt.sign(
-        { email: process.env.ADMIN_EMAIL }, // payload object
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
+    if (!email) {
+      return res.json({ success: false, message: "Email is required" });
+    }
 
+    if (!password) {
+      return res.json({ success: false, message: "Password is required" });
+    }
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    // Check admin access
+    if (!user.isAdmin) {
       return res.json({
-        success: true,
-        token,
-        message: "Admin logged in successfully",
+        success: false,
+        message: "Access denied! Not an admin user",
       });
     }
 
+    // Check password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.json({
+        success: false,
+        message: "Incorrect password",
+      });
+    }
+
+    // Create token
+    const token = createToken(user);
+
     return res.json({
-      success: false,
-      message: "Invalid credentials",
+      success: true,
+      token,
+      message: "Admin logged in successfully",
     });
   } catch (error) {
     console.log("Admin Login Error:", error);
-    return res.json({
-      success: false,
-      message: error.message,
-    });
+    return res.json({ success: false, message: error.message });
   }
 };
 
 const removeUser = async (req, res) => {
   try {
-    await userModel.findByIdAndDelete(req.body._id);
+    const userId = req.params.id; // <--- এখানে params.id
+    const removed = await userModel.findByIdAndDelete(userId);
+
+    if (!removed) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
     res.json({
       success: true,
       message: "User removed successfully",
     });
   } catch (error) {
-    console.log("Removed user Error");
-    res.json({
+    console.log("Removed user Error:", error.message);
+    res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
 const updateUser = async (req, res) => {
   try {
     const { _id, name, email, password } = req.body;

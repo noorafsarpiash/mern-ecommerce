@@ -3,27 +3,27 @@ import jwt from "jsonwebtoken";
 const adminAuth = async (req, res, next) => {
   try {
     // Token check: header or body
-    let token = req.headers.authorization?.split(" ")[1] || req.body.token;
+    const token = req.headers.token;
 
     if (!token || typeof token !== "string") {
       return res.json({
         success: false,
-        message: "Token দিতে হবে এবং তা string হতে হবে",
+        message: "Token is required and must be a string",
       });
     }
 
     // Token verify
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+    const { isAdmin } = decoded;
     // Admin check
-    if (decoded.email !== process.env.ADMIN_EMAIL) {
+    if (!isAdmin) {
       return res.json({
         success: false,
         message: "Unauthorized Access",
       });
     }
 
-    // যদি সব ঠিক থাকে
+    // If everything is fine
     next();
   } catch (error) {
     console.log("Admin Auth Error:", error);
