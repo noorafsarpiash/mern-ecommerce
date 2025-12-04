@@ -15,7 +15,7 @@ userRouter.post("/register", userRegister);
 userRouter.post("/login", userLogin);
 userRouter.post("/admin", adminLogin);
 
-userRouter.delete("/remove/:id", adminAuth, removeUser); // ✅ Only this route for deleting
+userRouter.delete("/remove/:id", adminAuth, removeUser);
 userRouter.put("/update/:id", updateUser);
 userRouter.get("/users", adminAuth, getUsers);
 

@@ -190,7 +190,7 @@ const adminLogin = async (req, res) => {
 
 const removeUser = async (req, res) => {
   try {
-    const userId = req.params.id; // <--- এখানে params.id
+    const userId = req.params.id;
     const removed = await userModel.findByIdAndDelete(userId);
 
     if (!removed) {
