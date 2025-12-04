@@ -7,12 +7,13 @@ import { IoMdTrash } from "react-icons/io";
 
 import Title from '../components/Title'
 import { IoMdAdd, IoMdClose } from 'react-icons/io'
+import NewUserForm from '../components/NewUserForm'
 const Users = ({ token }) => {
     const [usersList, setUsersList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [selectedUser, setSelectedUser] = useState(null)
     const [loadingUserId, setLoadingUserId] = useState(null);
-
+    let [isOpen, setIsOpen] = useState(false)
 
     const getUserList = async () => {
         try {
@@ -47,7 +48,7 @@ const Users = ({ token }) => {
         const confirmRemoval = window.confirm("Are you sure you want to remove this user?");
         if (!confirmRemoval) return;
 
-        setLoadingUserId(userId); // Loading spinner শুরু
+        setLoadingUserId(userId);
 
         try {
             const response = await axios.delete(`${serverUrl}/api/user/remove/${userId}`, {
@@ -68,10 +69,17 @@ const Users = ({ token }) => {
             console.log("User removal error", error);
             toast.error(error?.message || "Something went wrong");
         } finally {
-            setLoadingUserId(null); // Loading spinner শেষ
+            setLoadingUserId(null);
         }
     };
 
+    const openLoginForm = () => {
+        setIsOpen(true);
+    }
+
+    const closeLoginForm = () => {
+        setIsOpen(false);
+    }
 
     return (
         <div>
@@ -82,7 +90,7 @@ const Users = ({ token }) => {
                             {/* Title and Add User Button */}
                             <div className='flex items-center justify-between max-w-3xl'>
                                 <Title> Users</Title>
-                                <button className='flex items-center gap-1 bg-black/80 text-white px-6 text-sm font-medium py-2 rounded-md hover:bg-black duration-300 transition-colors'>Add user </button>
+                                <button onClick={openLoginForm} className='flex items-center gap-1 bg-black/80 text-white px-6 text-sm font-medium py-2 rounded-md hover:bg-black duration-300 transition-colors'>Add user </button>
                             </div>
 
                             {/* Users List Table Structure */}
@@ -92,9 +100,9 @@ const Users = ({ token }) => {
 
                                         {/* TABLE HEADER (Corrected Grid & Alignment) */}
                                         <div className='grid grid-cols-[1.5fr_2.5fr_1fr_0.5fr_0.5fr] items-center py-2 px-3 border-b border-t bg-gray-50 text-sm font-bold' >
-                                            <b className=''>Name</b>
+                                            <b className='hidden md:inline-flex'>Name</b>
                                             <b className=''>Email</b>
-                                            <b className=''>Admin</b>
+                                            <b className='hidden md:inline-flex text-center'>Admin</b>
                                             <b className='text-center'>Action</b>
                                             <b className='text-center'>Edit</b>
                                         </div>
@@ -106,13 +114,14 @@ const Users = ({ token }) => {
                                                     key={item?._id}
                                                 >
                                                     {/* Name (Left Aligned) */}
-                                                    <p className='font-semibold text-left' >{item?.name}</p>
+                                                    <p className='font-semibold text-left  hidden md:inline-flex' >{item?.name}</p>
 
                                                     {/* Email (Left Aligned) */}
                                                     <p className='font-normal text-left' >{item?.email}</p>
 
                                                     {/* Admin (Left Aligned, like in the first screenshot) */}
-                                                    <p className={item?.isAdmin ? "font-semibold text-left" : "font-normal text-left"}>{item?.isAdmin ? "Admin" : "User"}</p>
+                                                    <p className={item?.isAdmin ?
+                                                        "font-semibold text-left hidden md:inline-flex" : "font-normal text-left hidden md:inline-flex"}>{item?.isAdmin ? "Admin" : "User"}</p>
 
                                                     {/* Action (Center Aligned for Icon) */}
                                                     <div className='w-full flex justify-center'>
@@ -126,7 +135,15 @@ const Users = ({ token }) => {
                                                     </div>
 
                                                     {/* Edit (Center Aligned for Button) */}
-                                                    <button className='text-base cursor-pointer hover:text-green-600 duration-300 ease-out text-center'>Edit</button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedUser(item);
+                                                            setIsOpen(true);
+                                                        }}
+                                                        className="text-base cursor-pointer hover:text-green-600 duration-300 ease-out text-center"
+                                                    >
+                                                        Edit
+                                                    </button>
 
                                                 </div>
                                             ))
@@ -143,6 +160,8 @@ const Users = ({ token }) => {
 
                         </div>
                     )}
+
+            <NewUserForm isOpen={isOpen} setIsOpen={setIsOpen} close={closeLoginForm} getUserList={getUserList} setSelectedUser={setSelectedUser} />
 
         </div>
     )
