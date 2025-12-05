@@ -75,6 +75,7 @@ const Users = ({ token }) => {
 
     const openLoginForm = () => {
         setIsOpen(true);
+        setSelectedUser(null); // Clear selected user when opening form for new user
     }
 
     const closeLoginForm = () => {
@@ -161,7 +162,8 @@ const Users = ({ token }) => {
                         </div>
                     )}
 
-            <NewUserForm isOpen={isOpen} setIsOpen={setIsOpen} close={closeLoginForm} getUserList={getUserList} setSelectedUser={setSelectedUser} />
+            <NewUserForm isOpen={isOpen} setIsOpen={setIsOpen} close={closeLoginForm} getUserList={getUserList} setSelectedUser={setSelectedUser}
+                selectedUser={selectedUser} />
 
         </div>
     )
