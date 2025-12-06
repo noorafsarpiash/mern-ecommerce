@@ -3,6 +3,7 @@ import "dotenv/config";
 import cors from "cors";
 import dbConnect from "./config/mongodb.js";
 import userRouter from "./routes/userRouter.js";
+import productRoute from "./routes/productRoute.js";
 const app = express();
 
 const port = 8000;
@@ -21,6 +22,7 @@ app.get("/product", (req, res) => {
 });
 
 app.use("/api/user", userRouter);
+app.use("/api/product", productRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

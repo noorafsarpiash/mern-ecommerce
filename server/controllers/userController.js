@@ -213,33 +213,33 @@ const removeUser = async (req, res) => {
   }
 };
 
+// userController.js - সংশোধিত কোড
+
 const updateUser = async (req, res) => {
   try {
-    const { _id, name, email, password } = req.body;
+    // ✅ সঠিক: ID টি URL প্যারামিটার থেকে ধরুন
+    const userId = req.params.id; // বাকি ডেটা req.body থেকে ধরুন
+    const { name, email, password } = req.body; // Check ID (এখন userId ভেরিয়েবলটি চেক করুন)
 
-    // Check ID
-    if (!_id) {
+    if (!userId) {
       return res.json({
         success: false,
         message: "User ID is required",
       });
-    }
+    } // Find user (এখন userId ব্যবহার করে ইউজার খুঁজুন)
 
-    // Find user
-    const user = await userModel.findById(_id);
+    const user = await userModel.findById(userId);
     if (!user) {
       return res.json({
         success: false,
         message: "User not found",
       });
-    }
+    } // Update logic remains the same (বাকি আপডেটের লজিক একই থাকবে) // ... (বাকি কোড) // Update name
 
-    // Update name
     if (name) {
       user.name = name;
-    }
+    } // Update email
 
-    // Update email
     if (email) {
       if (!validator.isEmail(email)) {
         return res.json({
@@ -248,9 +248,8 @@ const updateUser = async (req, res) => {
         });
       }
       user.email = email;
-    }
+    } // Update password
 
-    // Update password
     if (password) {
       if (password.length < 8) {
         return res.json({
@@ -261,9 +260,8 @@ const updateUser = async (req, res) => {
 
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
-    }
+    } // Save updated user
 
-    // Save updated user
     await user.save();
 
     res.json({
