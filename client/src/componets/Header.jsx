@@ -22,7 +22,7 @@ const Header = () => {
         <div className="border-b-[1px] border-slate-300 sticky top-0 z-40 bg-white">
             <Container className="py-7 flex items-center justify-between gap-x-3 md:gap-x-7">
                 <Link to={"/"}>
-                    <img src={logo} alt="logo" className="w-20" />
+                    <img src={logo} alt="logo" className="w-40" />
                 </Link>
                 <Searchinput />
                 <div className="hidden md:inline-flex items-center gap-5 lg:gap-7 text-sm uppercase font-medium text-lightText">

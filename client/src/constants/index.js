@@ -13,23 +13,23 @@ export const headerNavigatin = [
 
 export const bannerData = [
   {
-    title: "Top selling smartphone and accessories",
+    title: "Trendy Crochet Bags, Crafted with Love",
     discount: "30% off",
-    from: 399.99,
+    from: 69.99,
     sale: "Flash sale",
     image: bannerImgOne,
   },
   {
-    title: "The best deals on smartphones",
-    discount: "about $230 off",
-    from: 499.99,
+    title: "Handcrafted Jute Bags for Everyday Elegance",
+    discount: "about $10 off",
+    from: 29.99,
     sale: "Flash sale",
     image: bannerImgTwo,
   },
   {
-    title: "Top selling smartphone and accessories",
+    title: "Beautifully Knotted Macrame Bags",
     discount: "Free shipping over $100",
-    from: 599.99,
+    from: 99.99,
     sale: "weekend deal",
     image: bannerImgThree,
   },
