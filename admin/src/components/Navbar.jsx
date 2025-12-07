@@ -14,7 +14,7 @@ const Navbar = ({ token, setToken }) => {
             <Container className="py-6 flex items-center justify-between" >
                 <div>
                     <Link to={"/"}>
-                        <img src={logo} alt="logo" />
+                        <img src={logo} alt="logo" className='w-32' />
                         <p className='text-xs uppercase font-bold mt-1 tracking-wide text-blue-600 divide-neutral-5'>Admin</p>
                     </Link>
                 </div>

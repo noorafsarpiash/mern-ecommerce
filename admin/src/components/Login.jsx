@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { logo } from '../assets/images'
+import { logo } from '../assets/images/'
 import Title from './Title'
 import toast from 'react-hot-toast';
 import { serverUrl } from '../../config';
@@ -40,7 +40,7 @@ const Login = ({ setToken }) => {
     return (
         <div className='flex flex-col gap-2 bg-gray-300 min-h-screen items-center justify-center'>
 
-            <div className='bg-white p-2 rounded-md'>
+            <div className='bg-white p-2 w-20 rounded-md'>
                 <img src={logo} alt="logo" />
             </div>
             <div className='bg-white p-5 min-w-96 shadow-xl rounded-lg'>
