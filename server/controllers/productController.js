@@ -135,10 +135,50 @@ const addProduct = async (req, res) => {
   }
 };
 
-const removeProduct = async (req, res) => {};
-const listProduct = async (req, res) => {
-  res.send("Get all products");
+const removeProduct = async (req, res) => {
+  try {
+    const product = await productModel.findById(_id);
+
+    if (!product) {
+      return res.json({ success: false, message: "Product not found" });
+    }
+    await productModel.findByIdAndDelete(req.body._id);
+    res.json({ success: true, message: "Product removed successfully" });
+  } catch (error) {
+    console.log("Error", error);
+    return res.json({ success: false, message: error.message });
+  }
 };
-const singleProduct = async (req, res) => {};
+const listProduct = async (req, res) => {
+  try {
+    const [total, products] = await Promise.all([
+      productModel.countDocuments({}),
+      productModel.find({}),
+    ]);
+
+    if (total === 0) {
+      return res.json({ success: false, message: "No products found" });
+    }
+
+    return res.json({ success: true, total, products });
+  } catch (error) {
+    console.log("Error", error);
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+const singleProduct = async (req, res) => {
+  try {
+    const { _id } = req.body;
+    const product = await productModel.findById(_id);
+    if (!product) {
+      return res.json({ success: false, message: "Product not found" });
+    }
+    res.json({ success: true, product });
+  } catch (error) {
+    console.log(error);
+    return res.json({ success: false, message: error.message });
+  }
+};
 
 export { addProduct, removeProduct, listProduct, singleProduct };

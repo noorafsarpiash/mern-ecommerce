@@ -1,4 +1,5 @@
 import express from "express";
+import adminAuth from "../middleware/adminAuth.js";
 import {
   addProduct,
   removeProduct,
@@ -15,6 +16,7 @@ productRoute.post(
     { name: "image1", maxCount: 1 },
     { name: "image2", maxCount: 1 },
   ]),
+  adminAuth,
   addProduct
 );
 productRoute.post("/remove", removeProduct);
