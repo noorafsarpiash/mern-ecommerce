@@ -27,6 +27,8 @@ const addProduct = async (req, res) => {
       tags,
     } = body;
 
+    console.log(body);
+
     // --- প্রাথমিক ভ্যালিডেশন ---
     if (!name) {
       return res
@@ -117,7 +119,7 @@ const addProduct = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "Product added successfully",
+      message: `Product ${name} added successfully`,
       data: newProduct,
     });
   } catch (error) {
@@ -126,12 +128,10 @@ const addProduct = async (req, res) => {
     if (error.name === "ValidationError") {
       return res.status(400).json({ success: false, message: error.message });
     }
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: error.message || "Internal Server Error",
-      });
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Internal Server Error",
+    });
   }
 };
 
