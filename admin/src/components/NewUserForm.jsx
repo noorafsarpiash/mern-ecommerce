@@ -4,7 +4,7 @@ import { IoMdClose, IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import Input, { Label } from './ui/input';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
-import serverUrl from '../utils/serverUrl';
+import { serverUrl } from '../../config';
 const NewUserForm = ({ isOpen, setIsOpen, close, getUserList, setSelectedUser, selectedUser }) => {
 
     // function open() {
@@ -63,6 +63,18 @@ const NewUserForm = ({ isOpen, setIsOpen, close, getUserList, setSelectedUser, s
             } else {
                 response = await axios.post(`${serverUrl}/api/user/register`, formData,)
 
+
+            }
+
+
+            const data = response.data;
+
+            if (data?.success) {
+                toast.success(data?.message);
+                setIsOpen(false)
+                getUserList();
+            } else {
+                toast.error(data?.message)
             }
 
         } catch (error) {
@@ -71,7 +83,8 @@ const NewUserForm = ({ isOpen, setIsOpen, close, getUserList, setSelectedUser, s
         }
     }
 
-
+    console.log("Selected User for update:", selectedUser);
+    console.log("User ID for update:", selectedUser?._id);
 
 
     return (
