@@ -1,10 +1,11 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useEffect, useState } from 'react'
 import { IoMdClose, IoMdEye, IoMdEyeOff } from 'react-icons/io';
-import Input, { Label } from './ui/input';
+
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { serverUrl } from '../../config';
+import Input from './ui/input';
 const NewUserForm = ({ isOpen, setIsOpen, close, getUserList, setSelectedUser, selectedUser }) => {
 
     // function open() {
