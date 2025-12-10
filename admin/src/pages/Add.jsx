@@ -2,9 +2,14 @@ import React, { useState } from "react";
 import Title from "../components/Title";
 import Input, { Label } from "../components/ui/input";
 import SmallLoader from "../components/SmallLoader";
+import toast from "react-hot-toast";
 import { IoMdAdd, IoMdCloudUpload } from "react-icons/io";
+import axios from "axios";
+import { serverUrl } from '../../config.js';
+import { useNavigate } from "react-router-dom";
 
-const Add = () => {
+const Add = ({ token }) => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -40,10 +45,50 @@ const Add = () => {
         });
     };
 
-    const handleUploadProduct = (e) => {
+    const handleUploadProduct = async (e) => {
         e.preventDefault();
         setLoading(true);
-        console.log(formData);
+        try {
+            setLoading(true);
+            const data = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value instanceof File) {
+                    data.append(key, value);
+                } else {
+                    data.append(key, value);
+                }
+            })
+
+            const response = await axios.post(serverUrl + "/api/product/add",
+                data, {
+                headers: {
+                    token,
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+
+            const responseData = await response?.data;
+
+            if (responseData?.success) {
+                toast.success(responseData?.message);
+                navigate("/list");
+
+            } else {
+                toast.error(responseData?.message);
+            }
+
+
+
+
+
+        } catch (error) {
+            console.log("Product data uploading error", error);
+            toast.error(error?.message);
+
+        }
+        finally {
+            setLoading(false);
+        }
         // upload product to database
     };
 
@@ -73,6 +118,8 @@ const Add = () => {
                                 type="file"
                                 id={imageId}
                                 onChange={handleImageChange}
+                                disabled={loading}
+
                                 hidden
                             />
                             <p>{formData[imageId] ? "Change" : "Upload"}</p>
@@ -88,6 +135,7 @@ const Add = () => {
                     type="text"
                     placeholder="Type product name here..."
                     name="name"
+                    disabled={loading}
                     onChange={handleChange}
                     className="w-full border border-gray-500 rounded-md px-4 py-2 outline-none"
                 />
