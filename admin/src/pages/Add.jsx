@@ -7,6 +7,8 @@ import { IoMdAdd, IoMdCloudUpload } from "react-icons/io";
 import axios from "axios";
 import { serverUrl } from '../../config.js';
 import { useNavigate } from "react-router-dom";
+import { FaSpinner } from "react-icons/fa6";
+
 
 const Add = ({ token }) => {
     const navigate = useNavigate();
@@ -17,7 +19,7 @@ const Add = ({ token }) => {
         description: "",
         brand: "",
         price: "",
-        discount: "",
+        discountedPercentage: "",
         _type: "",
         category: "",
         offer: false,
@@ -177,11 +179,11 @@ const Add = ({ token }) => {
                     />
                 </div>
                 <div className="flex flex-col w-full gap-1">
-                    <Label htmlFor="discount">Discount (%)</Label>
+                    <Label htmlFor="discountedPercentage">Discount (%)</Label>
                     <Input
                         type="number"
                         placeholder="discount percentage %"
-                        name="discount"
+                        name="discountedPercentage"
                         onChange={handleChange}
                         className="w-full border border-gray-500 rounded-md px-4 py-2 outline-none"
                     />
@@ -296,9 +298,10 @@ const Add = ({ token }) => {
             <button
                 disabled={loading}
                 type="submit"
-                className="bg-black/80 font-semibold flex items-center py-2 justify-center tracking-wide hover:bg-black duration-300 ease-in-out disabled:bg-gray-400 gap-2 disabled:cursor-not-allowed text-white uppercase w-24"
+                className="bg-black/80 font-semibold flex items-center py-2 justify-center tracking-wide hover:bg-black duration-300 ease-in-out rounded-md disabled:bg-gray-400 gap-2 disabled:cursor-not-allowed text-white uppercase w-32"
             >
-                Add {loading ? <SmallLoader /> : <IoMdAdd className="ml-2" />}
+                Add {loading ? <FaSpinner className="animate-spin" />
+                    : <IoMdAdd className="text-2xl" />}
             </button>
         </form>
     );
