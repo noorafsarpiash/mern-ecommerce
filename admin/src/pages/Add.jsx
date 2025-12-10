@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
-import Title from '../components/Title'
-import Input, { Label } from '../components/ui/input'
-import { IoIosArrowDown, IoMdArrowDown, IoMdCloudUpload } from "react-icons/io";
+import React, { useState } from "react";
+import Title from "../components/Title";
+import Input, { Label } from "../components/ui/input";
+import SmallLoader from "../components/SmallLoader";
+import { IoMdAdd, IoMdCloudUpload } from "react-icons/io";
 
 const Add = () => {
+    const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -14,18 +16,18 @@ const Add = () => {
         _type: "",
         category: "",
         offer: false,
-        available: true,
+        isAvailable: true,
         badge: false,
         tags: [],
         image1: null,
-        image2: null
+        image2: null,
     });
 
     const handleImageChange = (e) => {
         const { id, files } = e.target;
         setFormData({
             ...formData,
-            [id]: files[0]
+            [id]: files[0],
         });
     };
 
@@ -34,12 +36,22 @@ const Add = () => {
 
         setFormData({
             ...formData,
-            [name]: type === "checkbox" ? checked : value
+            [name]: type === "checkbox" ? checked : value,
         });
     };
 
+    const handleUploadProduct = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        console.log(formData);
+        // upload product to database
+    };
+
     return (
-        <form className="flex flex-col gap-4 w-full max-w-[900px] pb-60">
+        <form
+            onSubmit={handleUploadProduct}
+            className="flex flex-col gap-4 w-full max-w-[900px] pb-60"
+        >
             <Title>Upload products to Database</Title>
 
             {/* Image Uploads */}
@@ -69,13 +81,13 @@ const Add = () => {
                 ))}
             </div>
 
-            {/* Product Name */}
+            {/* Product Brand */}
             <div className="flex flex-col w-full gap-1">
-                <Label htmlFor="name">Product brand</Label>
+                <Label htmlFor="brand">Product brand</Label>
                 <Input
                     type="text"
                     placeholder="Type product name here..."
-                    name="brand"
+                    name="name"
                     onChange={handleChange}
                     className="w-full border border-gray-500 rounded-md px-4 py-2 outline-none"
                 />
@@ -92,6 +104,7 @@ const Add = () => {
                     className="w-full border border-gray-500 rounded-md px-4 py-2 outline-none resize-none"
                 />
             </div>
+
             <div className="flex flex-col w-full gap-1">
                 <Label htmlFor="brand">Product brand</Label>
                 <Input
@@ -102,7 +115,9 @@ const Add = () => {
                     className="w-full border border-gray-500 rounded-md px-4 py-2 outline-none"
                 />
             </div>
-            <div className='flex flex-col md:flex-row items-center gap-2'>
+
+            {/* Price & Discount */}
+            <div className="flex flex-col md:flex-row items-center gap-2">
                 <div className="flex flex-col w-full gap-1">
                     <Label htmlFor="price">Product price</Label>
                     <Input
@@ -114,55 +129,129 @@ const Add = () => {
                     />
                 </div>
                 <div className="flex flex-col w-full gap-1">
-                    <Label htmlFor="discount">Product discount percentage</Label>
+                    <Label htmlFor="discount">Discount (%)</Label>
                     <Input
                         type="number"
-                        placeholder="discount percentage % "
+                        placeholder="discount percentage %"
                         name="discount"
                         onChange={handleChange}
                         className="w-full border border-gray-500 rounded-md px-4 py-2 outline-none"
                     />
                 </div>
             </div>
-            <div className='flex flex-col md:flex-row items-center gap-2'>
-                <div className="flex flex-col w-full gap-1 ">
-                    <Label htmlFor="_type">Product type</Label>
-                    <select name="_type" onChange={handleChange} className='border px-4 py-2 border-gray-500 rounded-md max-w-[150px]'>
 
+            {/* Select Fields */}
+            <div className="flex flex-col md:flex-row items-center gap-2">
+                <div className="flex flex-col w-full gap-1 ">
+                    <Label>Product type</Label>
+                    <select
+                        name="_type"
+                        onChange={handleChange}
+                        className="border px-4 py-2 border-gray-500 rounded-md max-w-[150px]"
+                    >
                         <option value="">Select type</option>
-                        <option value="new_arrivals">Newe Arrivals</option>
+                        <option value="new_arrivals">New Arrivals</option>
                         <option value="best_sellers">Best Sellers</option>
                         <option value="special_offers">Most Popular</option>
                         <option value="promotions">Promotions</option>
-
                     </select>
-                    {/* <IoIosArrowDown className='text-3xl absolute top-0 right-0' /> */}
                 </div>
-                <div className="flex flex-col w-full gap-1 ">
-                    <Label htmlFor="category">Product category</Label>
-                    <select name="category" onChange={handleChange} className='border px-4 py-2 border-gray-500 rounded-md max-w-[150px]'>
 
+                <div className="flex flex-col w-full gap-1 ">
+                    <Label>Category</Label>
+                    <select
+                        name="category"
+                        onChange={handleChange}
+                        className="border px-4 py-2 border-gray-500 rounded-md max-w-[150px]"
+                    >
                         <option value="">Select type</option>
-                        <option value="new_arrivals">Men</option>
-                        <option value="best_sellers">Women</option>
-                        <option value="special_offers">Kids</option>
-                        <option value="promotions">Accessories</option>
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                        <option value="Kids">Kids</option>
+                        <option value="Accessories">Accessories</option>
                         <option value="Others">Others</option>
-
                     </select>
-                    {/* <IoIosArrowDown className='text-3xl absolute top-0 right-0' /> */}
                 </div>
-                <div className="flex flex-col w-full gap-1 ">
-                    <Label htmlFor="offer">Product type</Label>
-                    <select name="offer" onChange={handleChange} className='border px-4 py-2 border-gray-500 rounded-md max-w-[150px]'>
 
+                <div className="flex flex-col w-full gap-1 ">
+                    <Label>Offer</Label>
+                    <select
+                        name="offer"
+                        onChange={handleChange}
+                        className="border px-4 py-2 border-gray-500 rounded-md max-w-[150px]"
+                    >
                         <option value="false">False</option>
                         <option value="true">True</option>
-
                     </select>
-                    {/* <IoIosArrowDown className='text-3xl absolute top-0 right-0' /> */}
+                </div>
+
+                <div className="flex flex-col w-full gap-1 ">
+                    <Label>Available</Label>
+                    <select
+                        name="isAvailable"
+                        onChange={handleChange}
+                        className="border px-4 py-2 border-gray-500 rounded-md max-w-[150px]"
+                    >
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
+                </div>
+
+                <div className="flex flex-col w-full gap-1 ">
+                    <Label>Badge</Label>
+                    <select
+                        name="badge"
+                        onChange={handleChange}
+                        className="border px-4 py-2 border-gray-500 rounded-md max-w-[150px]"
+                    >
+                        <option value="false">False</option>
+                        <option value="true">True</option>
+                    </select>
                 </div>
             </div>
+
+            {/* Tags */}
+            <div className="flex flex-col gap-1 items-start">
+                <Label>Tags</Label>
+                <div>
+                    {["Fashion", "Electronics", "Sports", "Accessories", "Others"].map(
+                        (tag) => (
+                            <div key={tag} className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    id={tag.toLowerCase()}
+                                    name="tags"
+                                    value={tag}
+                                    className="cursor-pointer"
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            setFormData((prevData) => ({
+                                                ...prevData,
+                                                tags: [...prevData.tags, tag],
+                                            }));
+                                        } else {
+                                            setFormData((prevData) => ({
+                                                ...prevData,
+                                                tags: prevData.tags.filter((item) => item !== tag),
+                                            }));
+                                        }
+                                    }}
+                                />
+                                <p>{tag}</p>
+                            </div>
+                        )
+                    )}
+                </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+                disabled={loading}
+                type="submit"
+                className="bg-black/80 font-semibold flex items-center py-2 justify-center tracking-wide hover:bg-black duration-300 ease-in-out disabled:bg-gray-400 gap-2 disabled:cursor-not-allowed text-white uppercase w-24"
+            >
+                Add {loading ? <SmallLoader /> : <IoMdAdd className="ml-2" />}
+            </button>
         </form>
     );
 };
