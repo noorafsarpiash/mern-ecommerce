@@ -44,7 +44,19 @@ const List = () => {
                     </div>
                         {
                             list?.length > 0 ? (
-                                <div>Products available</div>
+                                <div className='flex flex-col gap-2 mt-2'>
+                                    <div className='grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm my-1.5'>
+                                        <b>Image</b>
+                                        <b>Name</b>
+                                        <b className='hidden md:inline-block'>Category</b>
+                                        <b>Price</b>
+                                        <b className='text-center'>Action</b>
+                                        <b className='text-center'>Edit</b>
+                                    </div>
+                                    {list?.map((item) => (<div key={item?._id}>
+                                        <img src={item?.images[0]} alt={item?.name} className='w-48 h-48 object-cover' />
+                                    </div>))}
+                                </div>
 
                             ) : (
                                 <div className='mt-2'>
