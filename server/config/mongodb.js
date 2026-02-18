@@ -7,7 +7,7 @@ const dbConnect = async () => {
     });
     await mongoose.connect(process.env.MONGODB_URI);
   } catch (error) {
-    console.log("MongoDB connection Error");
+    console.log("MongoDB connection Error:", error.message); // এখানে change হয়েছে
   }
 };
 
