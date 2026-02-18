@@ -40,8 +40,23 @@ const List = () => {
                 loading ? (<Loader />) : (
                     <> <div className='flex items-center justify-between'>
                         <Title>Product List</Title>
-                        <Link to={"/add"} className='text-sm font-medium hover:text-blue-600 duration cursor-pointer'>Add Product</Link>
+                        <Link to={"/add"} className='text-sm font-medium hover:text-blue-600 duration cursor-pointer'>Add Product +</Link>
                     </div>
+                        {
+                            list?.length > 0 ? (
+                                <div>Products available</div>
+
+                            ) : (
+                                <div className='mt-2'>
+                                    <p className='mb-4 text-red-600 font-medium tracking-wide'>You have no products in your Database</p>
+                                    <Link to={"/add"} className='bg-black/80 text-white py-2 px-4 rounded-md hover:bg-black duration-300 ease-in-out' >Add products</Link>
+
+                                </div>
+                            )
+                        }
+
+
+
                     </>
                 )
             }
