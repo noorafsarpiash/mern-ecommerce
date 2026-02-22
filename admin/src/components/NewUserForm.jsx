@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { IoMdClose, IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 import { toast } from 'react-hot-toast';
+import Label from './ui/label';
 import axios from 'axios';
 import { serverUrl } from '../../config';
 import Input from './ui/input';

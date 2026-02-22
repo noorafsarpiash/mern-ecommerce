@@ -5,6 +5,8 @@ import { toast } from 'react-hot-toast'
 import Title from '../components/Title'
 import Loader from './Loader'
 import { Link } from 'react-router-dom'
+import PriceFomat from '../components/PriceFomat'
+import { IoMdClose } from 'react-icons/io'
 
 const List = () => {
     const [list, setList] = useState([])
@@ -53,8 +55,22 @@ const List = () => {
                                         <b className='text-center'>Action</b>
                                         <b className='text-center'>Edit</b>
                                     </div>
-                                    {list?.map((item) => (<div key={item?._id}>
-                                        <img src={item?.images[0]} alt={item?.name} className='w-48 h-48 object-cover' />
+                                    {list?.map((item) => (<div className='grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm ' key={item?._id
+
+
+                                    }>
+                                        <img src={item?.images[0]} alt={item?.name} className='w-16 h-20 bg-white rounded-sm object-cover' />
+
+                                        <p className='font-semibold line-clamp-1'>{item?.name}  </p>
+                                        <p className='hidden md:inline-block font font-medium'>{item?.category}</p>
+
+                                        <PriceFomat className="text-green-600" amount={item?.price} />
+                                        <div className='flex items-center justify-center gap-2'>
+                                            <IoMdClose className='text-lg cursor-pointer hover:text-red-600 duration-300 ease-in-out' />
+                                        </div>
+                                        <div className='flex items-center justify-center gap-2'>
+                                            <Link to={"/add"} className='hover:text-green-600 duration-300 ease-in-out '>Edit</Link>
+                                        </div>
                                     </div>))}
                                 </div>
 
